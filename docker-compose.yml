@@ -1,31 +1,42 @@
-version: "3.8"
+version: "3.9"
+
 services:
   db:
-    image: postgres:15
+    image: postgres:14
+    container_name: face_db
+    restart: always
     environment:
-      POSTGRES_USER: user
-      POSTGRES_PASSWORD: password
       POSTGRES_DB: faces
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin123
     volumes:
-      - db_data:/var/lib/postgresql/data
-    ports: ["5432:5432"]
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5433:5432"
 
   central:
     build: ./central
-    env_file: ./central/.env.example
-    depends_on: ["db"]
-    ports: ["8000:8000"]
+    container_name: face_central
+    env_file:
+      - ./central/.env
+    depends_on:
+      - db
+    ports:
+      - "8000:8000"
     volumes:
       - ./central:/app
 
   local:
     build: ./local
-    env_file: ./local/.env.example
-    depends_on: ["central"]
-    ports: ["7860:7860"]
+    container_name: face_local
+    env_file:
+      - ./local/.env
+    depends_on:
+      - central
+    ports:
+      - "8500:8500"
     volumes:
       - ./local:/app
-      - ./local/data:/app/data
 
 volumes:
-  db_data:
+  postgres_data:
