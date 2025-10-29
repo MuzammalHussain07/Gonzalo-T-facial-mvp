@@ -1,0 +1,9 @@
+gradio
+face_recognition
+opencv-python-headless
+SQLAlchemy
+cryptography
+PyJWT
+python-dotenv
+pillow
+requests
